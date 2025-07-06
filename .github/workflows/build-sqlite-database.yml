@@ -1,0 +1,54 @@
+name: Build SQLite Database
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip:
+        type: number
+        description: Number of commits to skip
+      take:
+        type: number
+        description: Number of commits to take
+      verbose:
+        type: boolean
+        description: Run with logging output
+
+  schedule:
+    - cron:  '13 17 2 * *'
+
+jobs:
+  build_sqlite_database:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Install gems
+        run: bundle install
+
+      - name: Pull latest database
+        env:
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          AWS_DEFAULT_REGION: 'us-east-2'
+        run: |
+          LATEST_DB_FILENAME=$(aws s3 ls s3://arthistory-spotify-data | sort | tail -n 1 | awk '{print $4}')
+          aws s3 cp s3://arthistory-spotify-data/$LATEST_DB_FILENAME output/_spotify-data.db
+
+      - name: Build sqlite database
+        run: ruby scripts/build_sqlite_database.rb --take ${{github.event.inputs.take}} --skip ${{github.event.inputs.skip}} --verbose ${{github.event.inputs.verbose}}
+
+      - name: Push to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          AWS_DEFAULT_REGION: 'us-east-2'
+        run: |
+          aws s3 cp output/_spotify-data.db s3://arthistory-spotify-data/_spotify-data-$(node -e "console.log(new Date().valueOf())").db
