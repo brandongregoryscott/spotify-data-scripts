@@ -31,7 +31,11 @@ def read_artist_ids
   puts "artist_ids total #{total}"
   chunk_size = (total / 24).floor
   puts "chunk_size #{chunk_size}"
-  # $db.execute('SELECT id FROM artist_ids LIMIT ;')
+  limit = chunk_size
+  offset = chunk_size * current_hour
+  puts "limit: #{limit} offset: #{offset} current_hour: #{current_hour}"
+  artist_id_rows = $db.execute('SELECT id FROM artist_ids LIMIT ? OFFSET ?;', [limit, offset])
+  artist_id_rows.map { |row| row['id'] }
 end
 
 def authenticate(index = nil, attempt = 1)
