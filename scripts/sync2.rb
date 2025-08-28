@@ -8,10 +8,9 @@ require 'date'
 require 'json'
 require 'rest-client'
 require 'rspotify'
+require_relative 'spotify_utils'
 require_relative 'db_utils'
 require_relative 'date_utils'
-
-MAX_RETRIES = 25
 
 $db = SQLite3::Database.new('spotify-data.db')
 $db.results_as_hash = true
@@ -51,23 +50,6 @@ def read_artist_ids
   offset = chunk_size * current_hour_index
   artist_id_rows = $db.execute('SELECT id FROM artist_ids LIMIT ? OFFSET ?;', [limit, offset])
   artist_id_rows.map { |row| row['id'] }
-end
-
-def authenticate(index = nil, attempt = 1)
-  client_ids = ENV['CLIENT_IDS'].split(',')
-  client_secrets = ENV['CLIENT_SECRETS'].split(',')
-
-  secret_index = !index.nil? ? index : current_hour_index % 8
-
-  client_id = client_ids.at(secret_index) || client_ids.first
-  client_secret = client_secrets.at(secret_index) || client_secrets.first
-
-  RSpotify.authenticate(client_id, client_secret)
-rescue RestClient::TooManyRequests, RestClient::ServiceUnavailable, RestClient::InternalServerError,
-  RestClient::GatewayTimeout, RestClient::BadGateway, RestClient::Unauthorized
-  max_sleep_seconds = Float(2**attempt)
-  sleep rand(0.0..max_sleep_seconds)
-  authenticate(index, attempt + 1) if attempt < MAX_RETRIES
 end
 
 main
