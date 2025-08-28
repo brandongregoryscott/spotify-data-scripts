@@ -24,6 +24,35 @@ def insert_or_ignore_artist_id(db, artist_id)
   db.execute('INSERT OR IGNORE INTO artist_ids (id) VALUES (?);', [artist_id])
 end
 
+def bulk_insert(db, items, generate_insert_commands, chunk_size = 50, flush_after = 500)
+  insertions = []
+  items.each_slice(chunk_size) do |items_chunk|
+    insertions.concat(generate_insert_commands.call(items_chunk))
+    insertions.clear if flush_insertion_commands_if_needed(db, insertions, flush_after)
+  end
+
+  flush_insertion_commands(db, insertions)
+  insertions.clear
+end
+
+def flush_insertion_commands_if_needed(db, insertions, flush_after)
+  return false unless insertions.length == flush_after
+
+  flush_insertion_commands(db, insertions)
+end
+
+def flush_insertion_commands(db, insertions)
+  return false if insertions.empty?
+
+  db.transaction
+  insertions.each do |insertion|
+    db.execute(*insertion)
+  end
+  db.commit
+
+  true
+end
+
 def seed_initial_artist_ids(db)
   insert_or_ignore_artist_id(db, '6lcwlkAjBPSKnFBZjjZFJs')
 
