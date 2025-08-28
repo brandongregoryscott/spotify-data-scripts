@@ -26,7 +26,7 @@ def main
 
   artist_ids = read_artist_ids
 
-  bulk_insert($db, artist_ids, method(:find_and_generate_artist_snapshot_commands), 50, 500)
+  bulk_insert($db, artist_ids, method(:find_and_generate_artist_snapshot_commands))
 end
 
 def find_and_generate_artist_snapshot_commands(artist_ids_chunk)
