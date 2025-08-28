@@ -42,7 +42,7 @@ end
 
 def read_artist_ids
   $db.results_as_hash = false
-  total = $db.execute('SELECT COUNT(id) FROM artist_ids;')[0][0]
+  total = $db.get_first_value('SELECT COUNT(id) FROM artist_ids;')
   $db.results_as_hash = true
   chunk_size = (total / 24).floor
   puts "artist_ids total #{total} chunk_size #{chunk_size}"
