@@ -9,9 +9,8 @@ require 'rspotify'
 require_relative 'spotify_utils'
 require_relative 'db_utils'
 require_relative 'date_utils'
-require_relative 'file_utils'
 
-@db_name = find_spotify_data_db
+@db_name = db_name
 @db = SQLite3::Database.new(@db_name)
 @db.results_as_hash = true
 @timestamp = round_time(Time.now).to_i

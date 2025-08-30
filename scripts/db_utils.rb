@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+def db_name
+  Dir.glob('spotify-data*.db').first
+end
+
 def create_artist_ids_table(db)
   db.execute <<-SQL
     CREATE TABLE IF NOT EXISTS artist_ids (
