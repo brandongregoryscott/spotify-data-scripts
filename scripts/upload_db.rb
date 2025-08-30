@@ -3,6 +3,7 @@
 require 'bundler/setup'
 require 'aws-sdk-s3'
 require 'date'
+require_relative 'file_utils'
 
 S3_ENDPOINT = ENV['AWS_S3_ENDPOINT']
 ACCESS_KEY_ID = ENV['AWS_ACCESS_KEY_ID']
@@ -16,9 +17,10 @@ SECRET_ACCESS_KEY = ENV['AWS_SECRET_ACCESS_KEY']
 )
 
 def main
+  db_name = find_spotify_data_db
 
   object = Aws::S3::Object.new('spotify-data', "spotify-data_#{Time.now.to_i}.db", client: @r2)
-  object.upload_file('spotify-data_1751481126928.db')
+  object.upload_file(db_name)
 end
 
 main
