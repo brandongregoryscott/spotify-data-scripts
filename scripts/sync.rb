@@ -9,8 +9,10 @@ require 'rspotify'
 require_relative 'spotify_utils'
 require_relative 'db_utils'
 require_relative 'date_utils'
+require_relative 'file_utils'
 
-@db = SQLite3::Database.new('spotify-data.db')
+@db_name = find_spotify_data_db
+@db = SQLite3::Database.new(@db_name)
 @db.results_as_hash = true
 @timestamp = round_time(Time.now).to_i
 
@@ -18,7 +20,6 @@ def main
 
   create_artist_ids_table(@db)
   create_artist_snapshots_table(@db)
-  seed_initial_artist_ids(@db)
 
   authenticate
 
@@ -43,7 +44,7 @@ def read_artist_ids
   total = @db.get_first_value('SELECT COUNT(id) FROM artist_ids;')
   @db.results_as_hash = true
   chunk_size = (total / 24).floor
-  puts "artist_ids total #{total} chunk_size #{chunk_size}"
+  puts "db_name #{db_name} timestamp #{@timestamp} artist_ids total #{total} chunk_size #{chunk_size}"
   limit = chunk_size
   offset = chunk_size * current_hour_index
   artist_id_rows = @db.execute('SELECT id FROM artist_ids LIMIT ? OFFSET ?;', [limit, offset])
