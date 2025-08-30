@@ -2,8 +2,10 @@
 
 require 'bundler/setup'
 require 'sqlite3'
+require_relative 'file_utils'
 
-@db = SQLite3::Database.new('spotify-data.db')
+@db_name = find_spotify_data_db
+@db = SQLite3::Database.new(@db_name)
 @db.results_as_hash = true
 
 def main
