@@ -3,3 +3,4 @@
 vendor
 .idea
 *.db
+.DS_Store
