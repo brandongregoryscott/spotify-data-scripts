@@ -27,10 +27,15 @@ def main
   bulk_insert(@db, artist_ids, method(:find_and_generate_artist_snapshot_commands))
 end
 
-def find_and_generate_artist_snapshot_commands(artist_ids_chunk)
+def find_and_generate_artist_snapshot_commands(artist_ids_chunk, attempt = 1, max_retries = 25)
   artists = RSpotify::Artist.find(artist_ids_chunk).compact
 
   artists.map { |artist| generate_insert_artist_snapshot_command(artist) }
+rescue RestClient::TooManyRequests, RestClient::ServiceUnavailable, RestClient::InternalServerError,
+  RestClient::GatewayTimeout, RestClient::BadGateway, RestClient::Unauthorized
+  max_sleep_seconds = Float(2**attempt)
+  sleep rand(0.0..max_sleep_seconds)
+  find_and_generate_artist_snapshot_commands(artist_ids_chunk, attempt + 1) if attempt < max_retries
 end
 
 def generate_insert_artist_snapshot_command(artist)

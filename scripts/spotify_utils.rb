@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rspotify'
+require 'rest-client'
 require_relative 'date_utils'
 
 def authenticate(index = nil, attempt = 1, max_retries = 25)

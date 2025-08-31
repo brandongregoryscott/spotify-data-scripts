@@ -11,7 +11,11 @@ def main
 
   last_uploaded_db = databases_sorted_by_date.first
 
+  puts("Downloading #{last_uploaded_db.key}...")
+
   @r2.get_object({ bucket: 'spotify-data', key: last_uploaded_db.key }, target: last_uploaded_db.key)
+
+  puts("Downloaded #{last_uploaded_db.key}!")
 end
 
 # Parses the unix timestamp from the `spotify-data_123456789>.db` filename/key in S3
