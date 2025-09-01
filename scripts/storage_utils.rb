@@ -13,3 +13,16 @@ SECRET_ACCESS_KEY = ENV['AWS_SECRET_ACCESS_KEY']
   endpoint: S3_ENDPOINT,
   region: 'auto'
 )
+
+def list_databases_desc
+  database_objects = @r2.list_objects(bucket: 'spotify-data').contents
+
+  database_objects.sort_by { |database_object| parse_timestamp(database_object.key) }.reverse
+end
+
+# Parses the unix timestamp from the `spotify-data_123456789.db` filename/key in S3
+def parse_timestamp(object_key)
+  timestamp_with_extension = object_key.split('_').last
+  timestamp = timestamp_with_extension.split('.db').first
+  Integer(timestamp)
+end
