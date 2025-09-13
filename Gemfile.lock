@@ -67,6 +67,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
+    rexml (3.4.4)
     rspotify (2.12.0)
       addressable (~> 2.8.0)
       omniauth-oauth2 (>= 1.6)
@@ -86,6 +87,7 @@ PLATFORMS
 
 DEPENDENCIES
   aws-sdk-s3 (= 1.198.0)
+  rexml
   rspotify (= 2.12.0)
   sqlite3 (= 2.0.2)
 
