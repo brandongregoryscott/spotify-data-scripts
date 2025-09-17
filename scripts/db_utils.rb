@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
+require_relative 'date_utils'
+
 def db_name
-  Dir.glob('spotify-data*.db').first
+  "spotify-data_#{rounded_current_timestamp}.db"
 end
 
 def create_artist_ids_table(db)

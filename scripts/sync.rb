@@ -13,7 +13,7 @@ require_relative 'date_utils'
 @db_name = db_name
 @db = SQLite3::Database.new(@db_name)
 @db.results_as_hash = true
-@timestamp = round_time(Time.now).to_i
+@timestamp = rounded_current_timestamp
 
 def main
 
