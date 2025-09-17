@@ -7,17 +7,17 @@ require 'json'
 require 'rest-client'
 require 'rspotify'
 require_relative 'spotify_utils'
+require_relative 'storage_utils'
 require_relative 'db_utils'
 require_relative 'date_utils'
 
 @db_name = db_name
 @db = SQLite3::Database.new(@db_name)
+@artist_ids_db = pull_or_instantiate_artist_ids_db
 @db.results_as_hash = true
 @timestamp = rounded_current_timestamp
 
 def main
-
-  create_artist_ids_table(@db)
   create_artist_snapshots_table(@db)
 
   authenticate
@@ -44,14 +44,14 @@ def generate_insert_artist_snapshot_command(artist)
 end
 
 def read_artist_ids
-  @db.results_as_hash = false
-  total = @db.get_first_value('SELECT COUNT(id) FROM artist_ids;')
-  @db.results_as_hash = true
+  @artist_ids_db.results_as_hash = false
+  total = @artist_ids_db.get_first_value('SELECT COUNT(id) FROM artist_ids;')
+  @artist_ids_db.results_as_hash = true
   chunk_size = (total / 24).floor
   puts "db_name #{db_name} timestamp #{@timestamp} artist_ids total #{total} chunk_size #{chunk_size}"
   limit = chunk_size
   offset = chunk_size * current_hour_index
-  artist_id_rows = @db.execute('SELECT id FROM artist_ids LIMIT ? OFFSET ?;', [limit, offset])
+  artist_id_rows = @artist_ids_db.execute('SELECT id FROM artist_ids LIMIT ? OFFSET ?;', [limit, offset])
   artist_id_rows.map { |row| row['id'] }
 end
 
