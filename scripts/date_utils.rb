@@ -14,3 +14,7 @@ def current_hour_index
   hour = DateTime.now.strftime('%-H')
   Integer(hour)
 end
+
+def rounded_current_timestamp
+  round_time(Time.now).to_i
+end
