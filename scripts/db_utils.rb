@@ -6,11 +6,8 @@ def db_name
   "spotify-data_#{rounded_current_timestamp}.db"
 end
 
-def artist_ids_db_name
-  "artist_ids.db"
-end
-
 def pull_or_instantiate_artist_ids_db
+  artist_ids_db_name = "artist_ids.db"
   artist_ids_db_exists = !Dir.glob(artist_ids_db_name).empty?
   return SQLite3::Database.new(artist_ids_db_name) unless artist_ids_db_exists
   puts "Downloading #{artist_ids_db_name}..."
