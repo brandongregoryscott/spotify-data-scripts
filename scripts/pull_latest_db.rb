@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
+require 'dotenv/load'
 require 'aws-sdk-s3'
 require_relative 'storage_utils'
 
