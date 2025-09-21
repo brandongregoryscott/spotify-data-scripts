@@ -15,7 +15,7 @@ SECRET_ACCESS_KEY = ENV['AWS_SECRET_ACCESS_KEY']
 )
 
 def list_databases_desc
-  database_objects = @r2.list_objects(bucket: 'spotify-data').contents
+  database_objects = @r2.list_objects(bucket: 'spotify-data', prefix: 'spotify-data_').contents
 
   database_objects.sort_by { |database_object| parse_timestamp(database_object.key) }.reverse
 end
