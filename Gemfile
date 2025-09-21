@@ -7,3 +7,4 @@ gem 'rspotify', '2.12.0'
 gem 'sqlite3', '2.0.2'
 gem 'rexml'
 gem 'dotenv'
+gem 'rubocop', '1.63.1', require: false

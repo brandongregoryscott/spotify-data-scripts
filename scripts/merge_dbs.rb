@@ -6,13 +6,13 @@ require 'sqlite3'
 require_relative 'db_utils'
 require_relative 'storage_utils'
 
-@target_db = SQLite3::Database.new("merged-spotify-data.db")
+@target_db = SQLite3::Database.new('merged-spotify-data.db')
 @target_db.results_as_hash = true
 
 def main
   create_artist_snapshots_table(@target_db)
 
-  source_db_filenames = Dir.glob("spotify-data*.db")
+  source_db_filenames = Dir.glob('spotify-data*.db')
   source_db_filenames.each do |source_db_filename|
     source_db = SQLite3::Database.new(source_db_filename)
     source_db.results_as_hash = true
@@ -26,7 +26,7 @@ def main
 end
 
 def generate_insert_artist_snapshot_commands(artists)
-  artists.map {|artist| generate_insert_artist_snapshot_command(artist) }
+  artists.map { |artist| generate_insert_artist_snapshot_command(artist) }
 end
 
 def generate_insert_artist_snapshot_command(artist)
