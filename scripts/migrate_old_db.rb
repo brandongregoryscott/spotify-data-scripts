@@ -5,7 +5,7 @@ require 'sqlite3'
 require_relative 'db_utils'
 
 @db_name = db_name
-@db = SQLite3::Database.new('_spotify-data_1751481126928.db')
+@db = SQLite3::Database.new('_spotify-data-1751481126928.db')
 @db.results_as_hash = true
 
 def main
