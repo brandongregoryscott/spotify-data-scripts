@@ -15,7 +15,7 @@ def authenticate(index = nil, attempt = 1, max_retries = 25)
 
   RSpotify.authenticate(client_id, client_secret)
 rescue RestClient::TooManyRequests, RestClient::ServiceUnavailable, RestClient::InternalServerError,
-  RestClient::GatewayTimeout, RestClient::BadGateway, RestClient::Unauthorized
+       RestClient::GatewayTimeout, RestClient::BadGateway, RestClient::Unauthorized
   max_sleep_seconds = Float(2**attempt)
   sleep rand(0.0..max_sleep_seconds)
   authenticate(index, attempt + 1) if attempt < max_retries

@@ -33,7 +33,7 @@ def find_and_generate_artist_snapshot_commands(artist_ids_chunk, attempt = 1, ma
 
   artists.map { |artist| generate_insert_artist_snapshot_command(artist) }
 rescue RestClient::TooManyRequests, RestClient::ServiceUnavailable, RestClient::InternalServerError,
-  RestClient::GatewayTimeout, RestClient::BadGateway, RestClient::Unauthorized
+       RestClient::GatewayTimeout, RestClient::BadGateway, RestClient::Unauthorized
   max_sleep_seconds = Float(2**attempt)
   sleep rand(0.0..max_sleep_seconds)
   find_and_generate_artist_snapshot_commands(artist_ids_chunk, attempt + 1) if attempt < max_retries
