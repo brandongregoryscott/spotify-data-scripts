@@ -6,7 +6,7 @@ require 'sqlite3'
 require_relative 'db_utils'
 require_relative 'storage_utils'
 
-@target_db = SQLite3::Database.new('merged-spotify-data.db')
+@target_db = SQLite3::Database.new('_spotify-data.db')
 @target_db.results_as_hash = true
 
 def main

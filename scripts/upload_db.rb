@@ -11,8 +11,10 @@ require_relative 'storage_utils'
 @timestamp = rounded_current_timestamp
 
 def main
-  object = Aws::S3::Object.new('spotify-data', db_name, client: @r2)
-  object.upload_file(db_name)
+  s3_key = db_name
+  filename = s3_key
+  object = Aws::S3::Object.new('spotify-data', s3_key, client: @r2)
+  object.upload_file(filename)
 end
 
 main
